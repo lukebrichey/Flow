@@ -27,7 +27,12 @@ export default function Home(): JSX.Element {
       </div>
       <div className="text-center pb-4 text-lg">
         Made by{' '}
-        <a href="https://lukebrichey.xyz" className="underline text-blue-500">
+        <a
+          href="https://lukebrichey.xyz"
+          target="_blank"
+          rel="noreferrer"
+          className="underline text-blue-500"
+        >
           Luke Richey
         </a>
       </div>
