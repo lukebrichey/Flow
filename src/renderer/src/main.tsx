@@ -8,11 +8,13 @@ import './assets/index.css';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root />
-  },
-  {
-    path: '/focus',
-    element: <Focus />
+    element: <Root />,
+    children: [
+      {
+        path: '/focus',
+        element: <Focus />
+      }
+    ]
   }
 ]);
 
