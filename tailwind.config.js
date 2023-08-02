@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        coolGray: '#f2f2f2'
+        coolGray: '#c2c2c2'
       }
     }
   },

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './pages/Root';
 import Focus from './pages/Focus';
+import Pomodoro from './pages/Pomodoro';
 import './assets/index.css';
 
 const router = createBrowserRouter([
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
       {
         path: '/focus',
         element: <Focus />
+      },
+      {
+        path: '/pomo',
+        element: <Pomodoro />
       }
     ]
   }
