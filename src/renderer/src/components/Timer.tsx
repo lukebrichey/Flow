@@ -1,8 +1,20 @@
 import { useState, useEffect } from 'react';
 import PlayPauseButton from './PlayPauseButton';
+import { TimerType } from '../types/types';
 
-export default function Timer(): JSX.Element {
-  const [passedTime, setPassedTime] = useState(0);
+interface TimerProps {
+  type: TimerType;
+  time?: number;
+}
+
+export default function Timer({ type, time }: TimerProps): JSX.Element {
+  const startTime = type === 'focus' ? 0 : time ?? 60;
+
+  if (startTime < 0) {
+    throw new Error('Invalid time allotted for timer');
+  }
+
+  const [passedTime, setPassedTime] = useState(startTime);
   const [isRunning, setIsRunning] = useState(true);
 
   const toggleIsRunning = (): void => setIsRunning(!isRunning);
@@ -32,11 +44,9 @@ export default function Timer(): JSX.Element {
   };
 
   return (
-    <div className="bg-gray-200 rounded-lg shadow-md p-10 mb-6 flex flex-col items-center justify-center">
-      <div className="text-center">
-        <p className="text-6xl font-mono mb-4">{formatPassedTime(passedTime)}</p>
-        <PlayPauseButton isRunning={isRunning} toggleIsRunning={toggleIsRunning} />
-      </div>
+    <div className="bg-gray-200 w-full rounded-lg shadow-xl p-10 mb-6 flex flex-col items-center justify-center">
+      <p className="text-8xl font-mono mb-4">{formatPassedTime(passedTime)}</p>
+      <PlayPauseButton isRunning={isRunning} toggleIsRunning={toggleIsRunning} />
     </div>
   );
 }

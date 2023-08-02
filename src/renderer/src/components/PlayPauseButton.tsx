@@ -8,13 +8,13 @@ type PlayPauseButtonProps = {
 const PlayPauseButton = ({ isRunning, toggleIsRunning }: PlayPauseButtonProps): JSX.Element => {
   return (
     <div
-      className="bg-slate-400 inline-flex items-center justify-center w-12 h-12 rounded-full shadow-lg cursor-pointer"
+      className="bg-slate-400 inline-flex items-center justify-center w-1/6 h-10 rounded-full shadow-lg hover:bg-slate-500 hover:scale-110 cursor-pointer"
       onClick={toggleIsRunning}
     >
       {isRunning ? (
-        <PauseIcon className="h-6 w-6 text-white" />
+        <PauseIcon className="h-7/8 w-1/3 text-white" />
       ) : (
-        <PlayIcon className="h-6 w-6 text-white" />
+        <PlayIcon className="h-7/8 w-1/3 text-white" />
       )}
     </div>
   );
