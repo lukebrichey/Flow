@@ -1,6 +1,6 @@
 import { useOutlet } from 'react-router-dom';
 import { ArrowSmallRightIcon } from '@heroicons/react/20/solid';
-import Button from '../components/Button';
+import LinkButton from '../components/LinkButton';
 
 export default function Home(): JSX.Element {
   const outlet = useOutlet();
@@ -19,14 +19,14 @@ export default function Home(): JSX.Element {
             </h3>
             <div className="flex justify-around items-center mt-5">
               <div className="w-1/2 max-w-md">
-                <Button
+                <LinkButton
                   route="focus"
                   name="Focus Timer"
                   icon={<ArrowSmallRightIcon className="h-8 w-8" />}
                 />
               </div>
               <div className="w-1/2 max-w-md">
-                <Button
+                <LinkButton
                   route="pomo"
                   name="Pomodoro"
                   icon={<ArrowSmallRightIcon className="h-8 w-8" />}
