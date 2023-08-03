@@ -8,7 +8,7 @@ interface TimerProps {
 }
 
 export default function Timer({ type, time }: TimerProps): JSX.Element {
-  const startTime = type === TimerType.FOCUS ? 0 : time ?? 0;
+  const startTime = type === 'focus' ? 0 : time ?? 30 * 60; // Default to 30 minutes
 
   if (startTime < 0) {
     throw new Error('Invalid time allotted for timer');
@@ -58,7 +58,7 @@ export default function Timer({ type, time }: TimerProps): JSX.Element {
   };
 
   return (
-    <div className="bg-gray-200 w-full rounded-lg shadow-xl p-10 mb-6 flex flex-col items-center justify-center">
+    <div className="bg-gray-200 w-full rounded-lg shadow-xl p-10 mb-10 flex flex-col items-center justify-center">
       <p className="sm:text-3xl md:text-4xl lg:text-4xl xl:text-7xl font-mono mb-4">
         {formatPassedTime(passedTime)}
       </p>

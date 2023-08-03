@@ -25,7 +25,7 @@ function PomoButtons({ name, isActive, onClick }: PomoButtonsProps): JSX.Element
 
 export default function Pomodoro(): JSX.Element {
   const [activeButton, setActiveButton] = useState('Pomodoro');
-  const [startTime, setStartTime] = useState(30);
+  const [startTime, setStartTime] = useState(30 * 60);
 
   return (
     <div className="w-2/3">
