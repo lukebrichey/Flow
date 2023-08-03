@@ -1,6 +1,6 @@
 import Timer from '../components/Timer';
 import LinkButton from '../components/LinkButton';
-import { ArrowSmallLeftIcon } from '@heroicons/react/20/solid';
+import { ArrowSmallLeftIcon, Cog6ToothIcon } from '@heroicons/react/20/solid';
 import { TimerType } from '../types/types';
 import { useState } from 'react';
 
@@ -28,7 +28,10 @@ export default function Pomodoro(): JSX.Element {
   const [startTime, setStartTime] = useState(30 * 60);
 
   return (
-    <div className="w-2/3">
+    <div className="w-3/4">
+      <div className="min-w-full mb-2">
+        <Cog6ToothIcon className="h-7 w-7 hover:scale-110 hover:cursor-pointer transition-transform text-slate-700 ml-auto" />
+      </div>
       <div className="flex justify-around mb-4">
         <PomoButtons
           name="Pomodoro"
