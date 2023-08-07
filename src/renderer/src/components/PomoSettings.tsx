@@ -34,7 +34,7 @@ export function PomoSettings(
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center space-y-5">
       <div className="flex flex-col items-center justify-center">
         <label className="text-gray-700 text-sm font-bold mb-2" htmlFor="pomodoro">
           Pomodoro Length (minutes)
