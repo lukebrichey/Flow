@@ -28,12 +28,12 @@ function PomoButtons({ name, isActive, onClick }: PomoButtonsProps): JSX.Element
 
 export default function Pomodoro(): JSX.Element {
   const [activeButton, setActiveButton] = useState('Pomodoro');
-  const [startTime, setStartTime] = useState(30 * 60);
   const [preferences, setPreferences] = useState<IPreference>({
     pomodoroLength: 30,
     shortBreakLength: 5,
     longBreakLength: 15
   });
+  const [startTime, setStartTime] = useState(preferences.pomodoroLength * 60);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function handleStartTimeChange(value: number): void {

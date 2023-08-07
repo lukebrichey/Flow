@@ -7,16 +7,16 @@ interface PomoSettingsProps {
 }
 
 export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.Element {
-  const [pomodoro, setPomodoro] = useState(30);
-  const [shortBreak, setShortBreak] = useState(5);
-  const [longBreak, setLongBreak] = useState(15);
+  const [settings, setSettings] = useState<IPreference>({
+    pomodoroLength: 30,
+    shortBreakLength: 5,
+    longBreakLength: 15
+  });
 
   useEffect(() => {
     async function getSettings(): Promise<void> {
-      const defaultSettings = await getPreferences();
-      setPomodoro(defaultSettings.pomodoroLength);
-      setShortBreak(defaultSettings.shortBreakLength);
-      setLongBreak(defaultSettings.longBreakLength);
+      const currentSettings = await getPreferences();
+      setSettings(currentSettings);
     }
 
     getSettings();
@@ -29,9 +29,9 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
   async function handleSave(): Promise<void> {
     const updatedPreferences: IPreference = {
       id: 1,
-      pomodoroLength: pomodoro,
-      shortBreakLength: shortBreak,
-      longBreakLength: longBreak
+      pomodoroLength: settings.pomodoroLength,
+      shortBreakLength: settings.shortBreakLength,
+      longBreakLength: settings.longBreakLength
     };
     db.preferences.put(updatedPreferences);
     onSave();
@@ -47,8 +47,10 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="pomodoro"
           type="number"
-          value={pomodoro}
-          onChange={(e): void => setPomodoro(parseInt(e.target.value))}
+          value={settings.pomodoroLength}
+          onChange={(e): void =>
+            setSettings({ ...settings, pomodoroLength: parseInt(e.target.value) })
+          }
         />
       </div>
       <div className="flex flex-col items-center justify-center">
@@ -59,8 +61,10 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="shortBreak"
           type="number"
-          value={shortBreak}
-          onChange={(e): void => setShortBreak(parseInt(e.target.value))}
+          value={settings.shortBreakLength}
+          onChange={(e): void =>
+            setSettings({ ...settings, shortBreakLength: parseInt(e.target.value) })
+          }
         />
       </div>
       <div className="flex flex-col items-center justify-center">
@@ -71,8 +75,10 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="longBreak"
           type="number"
-          value={longBreak}
-          onChange={(e): void => setLongBreak(parseInt(e.target.value))}
+          value={settings.longBreakLength}
+          onChange={(e): void =>
+            setSettings({ ...settings, longBreakLength: parseInt(e.target.value) })
+          }
         />
       </div>
       <button
