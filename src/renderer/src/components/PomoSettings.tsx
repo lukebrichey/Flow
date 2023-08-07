@@ -8,9 +8,14 @@ interface PomoSettingsProps {
 
 export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.Element {
   const [settings, setSettings] = useState<IPreference>({
-    pomodoroLength: 30,
-    shortBreakLength: 5,
-    longBreakLength: 15
+    pomodoroLength: preferences.pomodoroLength,
+    shortBreakLength: preferences.shortBreakLength,
+    longBreakLength: preferences.longBreakLength
+  });
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string | null }>({
+    pomodoroLength: null,
+    shortBreakLength: null,
+    longBreakLength: null
   });
 
   useEffect(() => {
@@ -22,9 +27,15 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
     getSettings();
   }, []);
 
-  if (!preferences) {
-    return <div>Loading...</div>;
-  }
+  const validateInput = (value: number, key: keyof IPreference): boolean => {
+    if (value <= 0) {
+      setErrorMessages((prev) => ({ ...prev, [key]: 'Value should be greater than 0' }));
+      return false;
+    } else {
+      setErrorMessages((prev) => ({ ...prev, [key]: null }));
+      return true;
+    }
+  };
 
   async function handleSave(): Promise<void> {
     const updatedPreferences: IPreference = {
@@ -48,10 +59,13 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
           id="pomodoro"
           type="number"
           value={settings.pomodoroLength}
-          onChange={(e): void =>
-            setSettings({ ...settings, pomodoroLength: parseInt(e.target.value) })
-          }
+          onChange={(e): void => {
+            const value = parseInt(e.target.value);
+            validateInput(value, 'pomodoroLength') &&
+              setSettings({ ...settings, pomodoroLength: value });
+          }}
         />
+        <span className="text-red-500">{errorMessages.pomodoroLength}</span>
       </div>
       <div className="flex flex-col items-center justify-center">
         <label className="text-gray-700 text-sm font-bold mb-2" htmlFor="shortBreak">
@@ -62,10 +76,13 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
           id="shortBreak"
           type="number"
           value={settings.shortBreakLength}
-          onChange={(e): void =>
-            setSettings({ ...settings, shortBreakLength: parseInt(e.target.value) })
-          }
+          onChange={(e): void => {
+            const value = parseInt(e.target.value);
+            validateInput(value, 'shortBreakLength') &&
+              setSettings({ ...settings, shortBreakLength: value });
+          }}
         />
+        <span className="text-red-500">{errorMessages.shortBreakLength}</span>
       </div>
       <div className="flex flex-col items-center justify-center">
         <label className="text-gray-700 text-sm font-bold mb-2" htmlFor="longBreak">
@@ -76,19 +93,22 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
           id="longBreak"
           type="number"
           value={settings.longBreakLength}
-          onChange={(e): void =>
-            setSettings({ ...settings, longBreakLength: parseInt(e.target.value) })
-          }
+          onChange={(e): void => {
+            const value = parseInt(e.target.value);
+            validateInput(value, 'longBreakLength') &&
+              setSettings({ ...settings, longBreakLength: value });
+          }}
         />
+        <span className="text-red-500">{errorMessages.longBreakLength}</span>
       </div>
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
         type="button"
+        disabled={Object.values(errorMessages).some((msg) => msg)}
         onClick={handleSave}
       >
         Save
       </button>
-      <p className="text-gray-700 text-sm font-bold mb-2 mt-4">{status}</p>
     </div>
   );
 }
