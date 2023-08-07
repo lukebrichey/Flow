@@ -1,8 +1,10 @@
 import Timer from '../components/Timer';
 import LinkButton from '../components/LinkButton';
+import Modal from '../components/Modal';
 import { ArrowSmallLeftIcon, Cog6ToothIcon } from '@heroicons/react/20/solid';
 import { TimerType } from '../types/types';
 import { useState } from 'react';
+import { PomoSettings } from '@renderer/components/PomoSettings';
 
 interface PomoButtonsProps {
   name: string;
@@ -26,12 +28,27 @@ function PomoButtons({ name, isActive, onClick }: PomoButtonsProps): JSX.Element
 export default function Pomodoro(): JSX.Element {
   const [activeButton, setActiveButton] = useState('Pomodoro');
   const [startTime, setStartTime] = useState(30 * 60);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="w-3/4">
       <div className="min-w-full mb-2">
-        <Cog6ToothIcon className="h-7 w-7 hover:scale-110 hover:cursor-pointer transition-transform text-slate-700 ml-auto" />
+        <Cog6ToothIcon
+          className="h-7 w-7 hover:scale-110 hover:cursor-pointer transition-transform text-slate-700 ml-auto"
+          onClick={(): void => {
+            setIsModalOpen((prev) => !prev);
+          }}
+        />
       </div>
+      <Modal
+        title="Pomodoro Settings"
+        isOpen={isModalOpen}
+        onClose={(): void => {
+          setIsModalOpen(false);
+        }}
+      >
+        <PomoSettings defPomo={30} defShort={5} defLong={15} />
+      </Modal>
       <div className="flex justify-around mb-4">
         <PomoButtons
           name="Pomodoro"
