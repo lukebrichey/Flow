@@ -1,36 +1,40 @@
-import { db } from '../lib/db';
-import { useState } from 'react';
+import { db, IPreference, getPreferences } from '../lib/db';
+import { useState, useEffect } from 'react';
 
-type PomoSettingsProps = {
-  defPomo: number;
-  defShort: number;
-  defLong: number;
-};
+interface PomoSettingsProps {
+  preferences: IPreference;
+  onSave: () => void;
+}
 
-export function PomoSettings(
-  { defPomo, defShort, defLong }: PomoSettingsProps = { defPomo: 30, defShort: 5, defLong: 15 }
-): JSX.Element {
-  const [pomodoro, setPomodoro] = useState(defPomo);
-  const [shortBreak, setShortBreak] = useState(defShort);
-  const [longBreak, setLongBreak] = useState(defLong);
-  const [status, setStatus] = useState('');
+export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.Element {
+  const [pomodoro, setPomodoro] = useState(30);
+  const [shortBreak, setShortBreak] = useState(5);
+  const [longBreak, setLongBreak] = useState(15);
 
-  async function addSettings(): Promise<void> {
-    try {
-      // Add new preferences
-      const id = await db.preferences.add({
-        pomodoroLength: pomodoro,
-        shortBreakLength: shortBreak,
-        longBreakLength: longBreak
-      });
-
-      setStatus(`Added preferences with ID ${id}`);
-      setPomodoro(defPomo);
-      setShortBreak(defShort);
-      setLongBreak(defLong);
-    } catch (error) {
-      setStatus(`Failed to add new preferences: ${error}`);
+  useEffect(() => {
+    async function getSettings(): Promise<void> {
+      const defaultSettings = await getPreferences();
+      setPomodoro(defaultSettings.pomodoroLength);
+      setShortBreak(defaultSettings.shortBreakLength);
+      setLongBreak(defaultSettings.longBreakLength);
     }
+
+    getSettings();
+  }, []);
+
+  if (!preferences) {
+    return <div>Loading...</div>;
+  }
+
+  async function handleSave(): Promise<void> {
+    const updatedPreferences: IPreference = {
+      id: 1,
+      pomodoroLength: pomodoro,
+      shortBreakLength: shortBreak,
+      longBreakLength: longBreak
+    };
+    db.preferences.put(updatedPreferences);
+    onSave();
   }
 
   return (
@@ -74,7 +78,7 @@ export function PomoSettings(
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
         type="button"
-        onClick={addSettings}
+        onClick={handleSave}
       >
         Save
       </button>

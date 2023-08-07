@@ -3,8 +3,9 @@ import LinkButton from '../components/LinkButton';
 import Modal from '../components/Modal';
 import { ArrowSmallLeftIcon, Cog6ToothIcon } from '@heroicons/react/20/solid';
 import { TimerType } from '../types/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PomoSettings } from '@renderer/components/PomoSettings';
+import { getPreferences, IPreference } from '../lib/db';
 
 interface PomoButtonsProps {
   name: string;
@@ -28,7 +29,34 @@ function PomoButtons({ name, isActive, onClick }: PomoButtonsProps): JSX.Element
 export default function Pomodoro(): JSX.Element {
   const [activeButton, setActiveButton] = useState('Pomodoro');
   const [startTime, setStartTime] = useState(30 * 60);
+  const [preferences, setPreferences] = useState<IPreference>({
+    pomodoroLength: 30,
+    shortBreakLength: 5,
+    longBreakLength: 15
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  function handleStartTimeChange(value: number): void {
+    if (isNaN(value)) {
+      console.error('Attempted to set startTime to NaN');
+      return;
+    }
+    setStartTime(value);
+  }
+
+  // Get preferences from db
+  useEffect(() => {
+    getPreferences().then((preferences) => {
+      if (activeButton === 'Pomodoro') {
+        setStartTime(preferences.pomodoroLength * 60);
+      } else if (activeButton === 'Short Break') {
+        setStartTime(preferences.shortBreakLength * 60);
+      } else {
+        setStartTime(preferences.longBreakLength * 60);
+      }
+      setPreferences(preferences);
+    });
+  }, [isModalOpen]);
 
   return (
     <div className="w-3/4">
@@ -47,7 +75,16 @@ export default function Pomodoro(): JSX.Element {
           setIsModalOpen(false);
         }}
       >
-        <PomoSettings defPomo={30} defShort={5} defLong={15} />
+        <PomoSettings
+          preferences={{
+            pomodoroLength: preferences.pomodoroLength,
+            shortBreakLength: preferences.shortBreakLength,
+            longBreakLength: preferences.longBreakLength
+          }}
+          onSave={(): void => {
+            setIsModalOpen(false);
+          }}
+        />
       </Modal>
       <div className="flex justify-around mb-4">
         <PomoButtons
@@ -55,7 +92,7 @@ export default function Pomodoro(): JSX.Element {
           isActive={activeButton === 'Pomodoro'}
           onClick={(): void => {
             setActiveButton('Pomodoro');
-            setStartTime(30 * 60);
+            handleStartTimeChange(preferences.pomodoroLength * 60);
           }}
         />
         <PomoButtons
@@ -63,7 +100,7 @@ export default function Pomodoro(): JSX.Element {
           isActive={activeButton === 'Short Break'}
           onClick={(): void => {
             setActiveButton('Short Break');
-            setStartTime(5 * 60);
+            handleStartTimeChange(preferences.shortBreakLength * 60);
           }}
         />
         <PomoButtons
@@ -71,7 +108,7 @@ export default function Pomodoro(): JSX.Element {
           isActive={activeButton === 'Long Break'}
           onClick={(): void => {
             setActiveButton('Long Break');
-            setStartTime(15 * 60);
+            handleStartTimeChange(preferences.longBreakLength * 60);
           }}
         />
       </div>
