@@ -151,6 +151,7 @@ export default function Pomodoro(): JSX.Element {
       <Timer
         type={TimerType.POMODORO}
         time={state.startTime}
+        activeButton={state.activeButton}
         onZero={(): number => {
           // We automatically start pomodoro after break
           if (state.activeButton === 'Pomodoro') {

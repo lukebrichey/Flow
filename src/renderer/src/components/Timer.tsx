@@ -5,10 +5,11 @@ import { TimerType } from '../types/types';
 interface TimerProps {
   type: TimerType;
   time?: number;
+  activeButton?: string;
   onZero?: () => number; // Callback function to run when timer reaches 0
 }
 
-export default function Timer({ type, time, onZero }: TimerProps): JSX.Element {
+export default function Timer({ type, time, activeButton, onZero }: TimerProps): JSX.Element {
   const startTime = type === 'focus' ? 0 : time ?? 30 * 60; // Default to 30 minutes
 
   if (startTime < 0) {
@@ -24,7 +25,7 @@ export default function Timer({ type, time, onZero }: TimerProps): JSX.Element {
   useEffect(() => {
     setPassedTime(startTime);
     setIsRunning(false);
-  }, [startTime]);
+  }, [startTime, activeButton]);
 
   // Determine whether to count up or down based on timer type
   useEffect(() => {
