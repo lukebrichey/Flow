@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 interface PomoSettingsProps {
   preferences: IPreference;
-  onSave: () => void;
+  onSave: (updatedPreferences: IPreference) => void;
 }
 
 export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.Element {
@@ -45,7 +45,7 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
       longBreakLength: settings.longBreakLength
     };
     db.preferences.put(updatedPreferences);
-    onSave();
+    onSave(updatedPreferences);
   }
 
   return (

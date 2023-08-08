@@ -63,6 +63,12 @@ function reducer(state: PomodoroState, action: any): PomodoroState {
         ...state,
         startTime: action.preferences.pomodoroLength * 60
       };
+    case 'updatePreferences':
+      return {
+        ...state,
+        activeButton: 'Pomodoro',
+        startTime: action.preferences.pomodoroLength * 60
+      };
     default:
       return state;
   }
@@ -112,8 +118,10 @@ export default function Pomodoro(): JSX.Element {
             shortBreakLength: preferences.shortBreakLength,
             longBreakLength: preferences.longBreakLength
           }}
-          onSave={(): void => {
+          onSave={(updatedPreferences): void => {
             setIsModalOpen(false);
+            setPreferences(updatedPreferences);
+            dispatch({ type: 'updatePreferences', preferences: updatedPreferences });
           }}
         />
       </Modal>
