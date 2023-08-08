@@ -4,41 +4,90 @@ import PomoButtons from '../components/PomoButtons';
 import Modal from '../components/Modal';
 import { ArrowSmallLeftIcon, Cog6ToothIcon } from '@heroicons/react/20/solid';
 import { TimerType } from '../types/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useReducer } from 'react';
 import { PomoSettings } from '@renderer/components/PomoSettings';
 import { getPreferences, IPreference } from '../lib/db';
 
+interface PomodoroState {
+  pomodoroCount: number;
+  activeButton: string;
+  startTime: number;
+}
+
+const initialState: PomodoroState = {
+  pomodoroCount: 0,
+  activeButton: 'Pomodoro',
+  startTime: 30 * 60
+};
+
+// Using a reducer to handle state changes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function reducer(state: PomodoroState, action: any): PomodoroState {
+  switch (action.type) {
+    case 'increment':
+      if (state.pomodoroCount + 1 === 4) {
+        return {
+          ...state,
+          pomodoroCount: 0,
+          activeButton: 'Long Break',
+          startTime: action.preferences.longBreakLength * 60
+        };
+      } else {
+        return {
+          ...state,
+          pomodoroCount: state.pomodoroCount + 1,
+          activeButton: 'Short Break',
+          startTime: action.preferences.shortBreakLength * 60
+        };
+      }
+    case 'pomodoro':
+      return {
+        ...state,
+        activeButton: 'Pomodoro',
+        startTime: action.preferences.pomodoroLength * 60
+      };
+    case 'shortBreak':
+      return {
+        ...state,
+        activeButton: 'Short Break',
+        startTime: action.preferences.shortBreakLength * 60
+      };
+    case 'longBreak':
+      return {
+        ...state,
+        activeButton: 'Long Break',
+        startTime: action.preferences.longBreakLength * 60
+      };
+    case 'initialPreferences':
+      return {
+        ...state,
+        startTime: action.preferences.pomodoroLength * 60
+      };
+    default:
+      return state;
+  }
+}
+
 export default function Pomodoro(): JSX.Element {
-  const [activeButton, setActiveButton] = useState('Pomodoro');
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [preferences, setPreferences] = useState<IPreference>({
     pomodoroLength: 30,
     shortBreakLength: 5,
     longBreakLength: 15
   });
-  const [startTime, setStartTime] = useState(preferences.pomodoroLength * 60);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  function handleStartTimeChange(value: number): void {
-    if (isNaN(value)) {
-      console.error('Attempted to set startTime to NaN');
-      return;
-    }
-    setStartTime(value);
-  }
 
   // Get preferences from db
   useEffect(() => {
-    getPreferences().then((preferences) => {
-      if (activeButton === 'Pomodoro') {
-        setStartTime(preferences.pomodoroLength * 60);
-      } else if (activeButton === 'Short Break') {
-        setStartTime(preferences.shortBreakLength * 60);
-      } else {
-        setStartTime(preferences.longBreakLength * 60);
-      }
-      setPreferences(preferences);
+    getPreferences().then((prefs) => {
+      setPreferences(prefs);
+      dispatch({ type: 'initialPreferences', preferences: prefs });
     });
-  }, [isModalOpen]);
+  }, []);
+
+  if (!preferences) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="w-3/4">
@@ -71,42 +120,36 @@ export default function Pomodoro(): JSX.Element {
       <div className="flex justify-around mb-4">
         <PomoButtons
           name="Pomodoro"
-          isActive={activeButton === 'Pomodoro'}
+          isActive={state.activeButton === 'Pomodoro'}
           onClick={(): void => {
-            setActiveButton('Pomodoro');
-            handleStartTimeChange(preferences.pomodoroLength * 60);
+            dispatch({ type: 'pomodoro', preferences });
           }}
         />
         <PomoButtons
           name="Short Break"
-          isActive={activeButton === 'Short Break'}
+          isActive={state.activeButton === 'Short Break'}
           onClick={(): void => {
-            setActiveButton('Short Break');
-            handleStartTimeChange(preferences.shortBreakLength * 60);
+            dispatch({ type: 'shortBreak', preferences });
           }}
         />
         <PomoButtons
           name="Long Break"
-          isActive={activeButton === 'Long Break'}
+          isActive={state.activeButton === 'Long Break'}
           onClick={(): void => {
-            setActiveButton('Long Break');
-            handleStartTimeChange(preferences.longBreakLength * 60);
+            dispatch({ type: 'longBreak', preferences });
           }}
         />
       </div>
       <Timer
         type={TimerType.POMODORO}
-        time={startTime}
+        time={state.startTime}
         onZero={(): number => {
-          if (activeButton === 'Pomodoro') {
-            setActiveButton('Short Break');
-            return preferences.shortBreakLength * 60;
-          } else if (activeButton === 'Short Break') {
-            setActiveButton('Pomodoro');
-            return preferences.pomodoroLength * 60;
-          } else if (activeButton === 'Long Break') {
-            setActiveButton('Pomodoro');
-            return preferences.pomodoroLength * 60;
+          if (state.activeButton === 'Pomodoro') {
+            dispatch({ type: 'increment', preferences });
+          } else if (state.activeButton === 'Short Break') {
+            dispatch({ type: 'pomodoro', preferences });
+          } else if (state.activeButton === 'Long Break') {
+            dispatch({ type: 'pomodoro', preferences });
           }
           return 0;
         }}
