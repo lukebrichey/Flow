@@ -36,7 +36,14 @@ export default function Timer({ type, time }: TimerProps): JSX.Element {
       };
     } else if (isRunning && type === 'pomodoro') {
       const interval = setInterval(() => {
-        setPassedTime((passedTime) => passedTime - 1);
+        setPassedTime((passedTime) => {
+          if (passedTime === 0) {
+            setIsRunning(false);
+            return 0;
+          } else {
+            return passedTime - 1;
+          }
+        });
       }, 1000);
       return () => {
         clearInterval(interval);
