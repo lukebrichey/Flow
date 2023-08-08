@@ -112,7 +112,23 @@ export default function Pomodoro(): JSX.Element {
           }}
         />
       </div>
-      <Timer type={TimerType.POMODORO} time={startTime} />
+      <Timer
+        type={TimerType.POMODORO}
+        time={startTime}
+        onZero={(): number => {
+          if (activeButton === 'Pomodoro') {
+            setActiveButton('Short Break');
+            return preferences.shortBreakLength * 60;
+          } else if (activeButton === 'Short Break') {
+            setActiveButton('Pomodoro');
+            return preferences.pomodoroLength * 60;
+          } else if (activeButton === 'Long Break') {
+            setActiveButton('Pomodoro');
+            return preferences.pomodoroLength * 60;
+          }
+          return 0;
+        }}
+      />
       <LinkButton
         route="/"
         name="Back to Home"

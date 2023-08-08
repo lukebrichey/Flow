@@ -5,9 +5,10 @@ import { TimerType } from '../types/types';
 interface TimerProps {
   type: TimerType;
   time?: number;
+  onZero?: () => number; // Callback function to run when timer reaches 0
 }
 
-export default function Timer({ type, time }: TimerProps): JSX.Element {
+export default function Timer({ type, time, onZero }: TimerProps): JSX.Element {
   const startTime = type === 'focus' ? 0 : time ?? 30 * 60; // Default to 30 minutes
 
   if (startTime < 0) {
@@ -39,7 +40,7 @@ export default function Timer({ type, time }: TimerProps): JSX.Element {
         setPassedTime((passedTime) => {
           if (passedTime === 0) {
             setIsRunning(false);
-            return 0;
+            return onZero?.() ?? 0;
           } else {
             return passedTime - 1;
           }
