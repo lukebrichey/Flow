@@ -18,6 +18,7 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
     longBreakLength: null
   });
 
+  // Fetch preferences from the database
   useEffect(() => {
     async function getSettings(): Promise<void> {
       const currentSettings = await getPreferences();
@@ -27,6 +28,7 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
     getSettings();
   }, []);
 
+  // Validate input for each field
   const validateInput = (value: number, key: keyof IPreference): boolean => {
     if (value <= 0) {
       setErrorMessages((prev) => ({ ...prev, [key]: 'Value should be greater than 0' }));
@@ -37,6 +39,7 @@ export function PomoSettings({ preferences, onSave }: PomoSettingsProps): JSX.El
     }
   };
 
+  // Save preferences to the database
   async function handleSave(): Promise<void> {
     const updatedPreferences: IPreference = {
       id: 1,
