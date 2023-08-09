@@ -1,6 +1,7 @@
 import { useOutlet } from 'react-router-dom';
 import { ArrowSmallRightIcon } from '@heroicons/react/20/solid';
 import LinkButton from '../components/LinkButton';
+import FocusGoal from '@renderer/components/FocusGoal';
 
 export default function Home(): JSX.Element {
   const outlet = useOutlet();
@@ -10,7 +11,7 @@ export default function Home(): JSX.Element {
       <div className="bg-white w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4 rounded-xl text-center p-6 mx-auto shadow-lg">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold italic">Flow</h1>
       </div>
-      <div className="bg-white w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/2 rounded-md text-center p-4 sm:p-8 md:p-12 lg:p-16 mt-20 mx-auto shadow-lg">
+      <div className="bg-white w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/2 rounded-md text-center p-4 sm:p-8 md:p-12 lg:p-16 mt-20 mx-auto shadow-lg mb-auto">
         <div className="flex justify-center">{outlet}</div>
         {!outlet && (
           <div>
@@ -36,6 +37,7 @@ export default function Home(): JSX.Element {
           </div>
         )}
       </div>
+      <FocusGoal focusTime={25} focusGoal={100} />
       <div className="text-center pb-4 text-lg mt-auto">
         Made by{' '}
         <a
