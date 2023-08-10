@@ -25,7 +25,7 @@ const initialState: PomodoroState = {
 function reducer(state: PomodoroState, action: any): PomodoroState {
   switch (action.type) {
     case 'increment':
-      if (state.pomodoroCount + 1 === 4) {
+      if (state.pomodoroCount + 1 === action.preferences.pomodoroCount) {
         return {
           ...state,
           pomodoroCount: 0,
@@ -79,7 +79,8 @@ export default function Pomodoro(): JSX.Element {
   const [preferences, setPreferences] = useState<IPreference>({
     pomodoroLength: 30,
     shortBreakLength: 5,
-    longBreakLength: 15
+    longBreakLength: 15,
+    pomodoroCount: 4
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -116,7 +117,8 @@ export default function Pomodoro(): JSX.Element {
           preferences={{
             pomodoroLength: preferences.pomodoroLength,
             shortBreakLength: preferences.shortBreakLength,
-            longBreakLength: preferences.longBreakLength
+            longBreakLength: preferences.longBreakLength,
+            pomodoroCount: preferences.pomodoroCount
           }}
           onSave={(updatedPreferences): void => {
             setIsModalOpen(false);

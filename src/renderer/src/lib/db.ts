@@ -8,7 +8,7 @@ class MyDatabase extends Dexie {
     super('MyDatabase');
 
     this.version(1).stores({
-      preferences: '++id, pomodoroLength, shortBreakLength, longBreakLength'
+      preferences: '++id, pomodoroLength, shortBreakLength, longBreakLength, pomodoroCount'
     });
   }
 }
@@ -18,7 +18,7 @@ interface IPreference {
   pomodoroLength: number;
   shortBreakLength: number;
   longBreakLength: number;
-  // ... other fields
+  pomodoroCount: number;
 }
 
 const db = new MyDatabase();
@@ -32,7 +32,8 @@ export const getPreferences = async (): Promise<IPreference> => {
     const defaultPreferences: IPreference = {
       pomodoroLength: 30,
       shortBreakLength: 5,
-      longBreakLength: 15
+      longBreakLength: 15,
+      pomodoroCount: 4
     };
     await db.preferences.add(defaultPreferences);
     return defaultPreferences;
