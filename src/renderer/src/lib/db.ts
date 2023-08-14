@@ -3,22 +3,33 @@ import Dexie from 'dexie';
 class MyDatabase extends Dexie {
   // Add definite assignment assertion
   preferences!: Dexie.Table<IPreference, number>;
+  focusStats: Dexie.Table<IFocusStat, number>;
 
   constructor() {
     super('MyDatabase');
 
     this.version(1).stores({
-      preferences: '++id, pomodoroLength, shortBreakLength, longBreakLength, pomodoroCount'
+      preferences: '++id, pomodoroLength, shortBreakLength, longBreakLength, pomodoroCount',
+      focusStats: '++id, totalFocusTime'
     });
+
+    this.focusStats = this.table('focusStats');
   }
 }
 
+// Interface for pomodoro preferences
 interface IPreference {
   id?: number;
   pomodoroLength: number;
   shortBreakLength: number;
   longBreakLength: number;
   pomodoroCount: number;
+}
+
+// Interface for focus stats
+interface IFocusStat {
+  id?: number;
+  totalFocusTime: number;
 }
 
 const db = new MyDatabase();
@@ -42,6 +53,17 @@ export const getPreferences = async (): Promise<IPreference> => {
   }
 };
 
+// Function to get the latest focus time
+export const getFocusTime = async (): Promise<number> => {
+  const latestStat = await db.focusStats.orderBy('id').reverse().first();
+  return latestStat?.totalFocusTime || 0;
+};
+
+// Function to update the focus time
+export const updateFocusTime = async (newFocusTime: number): Promise<void> => {
+  await db.focusStats.add({ totalFocusTime: newFocusTime });
+};
+
 // Use 'export type' for re-exporting types
-export type { IPreference };
+export type { IPreference, IFocusStat };
 export { db };

@@ -1,7 +1,7 @@
 import { useOutlet } from 'react-router-dom';
 import { ArrowSmallRightIcon } from '@heroicons/react/20/solid';
 import LinkButton from '../components/LinkButton';
-import FocusGoal from '@renderer/components/FocusGoal';
+import FocusGoal from '../components/FocusGoal';
 
 export default function Home(): JSX.Element {
   const outlet = useOutlet();
