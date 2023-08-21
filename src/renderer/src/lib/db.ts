@@ -34,7 +34,7 @@ const DEFAULT_PREFERENCES: IPreference = {
 
 const DEFAULT_FOCUS_GOAL: IDailyFocusGoal = {
   date: new Date(),
-  focusGoal: 120, // 1 hour
+  focusGoal: 120, // 2 hours
   focusStreak: 0
 };
 
@@ -90,14 +90,19 @@ export const getFocusTime = async (): Promise<number> => {
 };
 
 // Function to update the focus time
-export const updateFocusTime = async (
-  newFocusTime: number,
-  newDailyFocusGoal?: number
-): Promise<void> => {
+export const updateFocusTime = async (newFocusTime: number): Promise<void> => {
   await db.focusStats.update(1, { totalFocusTime: newFocusTime });
-  if (newDailyFocusGoal) {
-    await db.dailyFocusGoals.update(1, { focusGoal: newDailyFocusGoal });
-  }
+};
+
+// Function to get the latest focus goal
+export const getFocusGoal = async (): Promise<number> => {
+  const latestGoal = await db.dailyFocusGoals.orderBy('id').reverse().first();
+  return latestGoal?.focusGoal || DEFAULT_FOCUS_GOAL.focusGoal;
+};
+
+// Function to update the focus goal
+export const updateFocusGoal = async (newFocusGoal: number): Promise<void> => {
+  await db.dailyFocusGoals.update(1, { focusGoal: newFocusGoal });
 };
 
 // Use 'export type' for re-exporting types
