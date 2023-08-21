@@ -21,8 +21,8 @@ interface IFocusStat {
 interface IDailyFocusGoal {
   id?: number;
   date: Date;
-  focusGoal: number;
-  focusStreak: number;
+  focusGoal: number; // Number of minutes the user wants to focus for each day
+  focusStreak: number; // Number of days in a row that the user has met their focus goal
 }
 
 const DEFAULT_PREFERENCES: IPreference = {
@@ -31,6 +31,14 @@ const DEFAULT_PREFERENCES: IPreference = {
   longBreakLength: 15,
   pomodoroCount: 4
 };
+
+const DEFAULT_FOCUS_GOAL: IDailyFocusGoal = {
+  date: new Date(),
+  focusGoal: 120, // 1 hour
+  focusStreak: 0
+};
+
+// No need for default values for focus stats, as they are updated on the fly
 
 class MyDatabase extends Dexie {
   // Add definite assignment assertion
@@ -55,6 +63,13 @@ class MyDatabase extends Dexie {
     this.preferences.count().then((count) => {
       if (count === 0) {
         this.preferences.add(DEFAULT_PREFERENCES);
+      }
+    });
+
+    // Populate the database with default focus goals if none are found
+    this.dailyFocusGoals.count().then((count) => {
+      if (count === 0) {
+        this.dailyFocusGoals.add(DEFAULT_FOCUS_GOAL);
       }
     });
   }
