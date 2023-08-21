@@ -100,21 +100,29 @@ export const getPreferences = async (): Promise<IPreference> => {
 
 // Function to get the latest focus time
 export const getFocusTime = async (): Promise<number> => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
-
-  const todaysGoal = await db.dailyFocusGoals.where('date').equals(today).first();
+  const todaysGoal = await db.dailyFocusGoals.where('date').equals(todayAtMidnight).first();
   return todaysGoal?.focusTime || 0;
 };
 
 // Function to update the focus time
 export const updateFocusTime = async (newFocusTime: number): Promise<void> => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
-
-  const todaysGoal = await db.dailyFocusGoals.where('date').equals(today).first();
+  const todaysGoal = await db.dailyFocusGoals.where('date').equals(todayAtMidnight).first();
   if (todaysGoal && todaysGoal.id) {
     await db.dailyFocusGoals.update(todaysGoal.id, { focusTime: newFocusTime });
+  }
+};
+
+// Function to get the latest focus goal
+export const getFocusGoal = async (): Promise<number> => {
+  const todaysGoal = await db.dailyFocusGoals.where('date').equals(todayAtMidnight).first();
+  return todaysGoal?.focusGoal || 0;
+};
+
+// Function to update the focus goal
+export const updateFocusGoal = async (newFocusGoal: number): Promise<void> => {
+  const todaysGoal = await db.dailyFocusGoals.where('date').equals(todayAtMidnight).first();
+  if (todaysGoal && todaysGoal.id) {
+    await db.dailyFocusGoals.update(todaysGoal.id, { focusGoal: newFocusGoal });
   }
 };
 
@@ -127,15 +135,12 @@ export const getFocusStreak = async (): Promise<number> => {
 // Fucntion that handles the focus streak logic, will be called at the beginning
 // of each new day
 export const updateFocusStreak = async (): Promise<void> => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   const latestGoal = await db.dailyFocusGoals.orderBy('date').reverse().first();
 
   // Check if there are missing days
   if (latestGoal && latestGoal.date) {
     const lastDate = new Date(latestGoal.date);
-    const daysDifference = (today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+    const daysDifference = (todayAtMidnight.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
 
     if (daysDifference > 1) {
       // Reset streak if there are missing days
