@@ -77,7 +77,7 @@ class MyDatabase extends Dexie {
 
 const db = new MyDatabase();
 
-// Function to get preferences from the database, sets default preferences if none are found.
+// Function to get preferences from the database
 export const getPreferences = async (): Promise<IPreference> => {
   const allPreferences = await db.preferences.toArray();
   return allPreferences[0]; // Assumes one set of preferences per user
@@ -103,6 +103,25 @@ export const getFocusGoal = async (): Promise<number> => {
 // Function to update the focus goal
 export const updateFocusGoal = async (newFocusGoal: number): Promise<void> => {
   await db.dailyFocusGoals.update(1, { focusGoal: newFocusGoal });
+};
+
+// Function to get the latest focus streak
+export const getFocusStreak = async (): Promise<number> => {
+  const latestGoal = await db.dailyFocusGoals.orderBy('id').reverse().first();
+  return latestGoal?.focusStreak || DEFAULT_FOCUS_GOAL.focusStreak;
+};
+
+// Function to update the focus streak
+export const updateFocusStreak = async (newFocusStreak: number): Promise<void> => {
+  await db.dailyFocusGoals.update(1, { focusStreak: newFocusStreak });
+};
+
+export const incrementFocusStreak = async (currentFocusTime: number): Promise<void> => {
+  const focusGoal = await getFocusGoal();
+  const focusStreak = await getFocusStreak();
+  if (currentFocusTime >= focusGoal) {
+    await updateFocusStreak(focusStreak + 1);
+  }
 };
 
 // Use 'export type' for re-exporting types
