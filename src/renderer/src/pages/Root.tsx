@@ -36,7 +36,6 @@ export default function Home(): JSX.Element {
           />
         </div>
       </div>
-
       <Modal
         title="Focus Goal Settings"
         isOpen={settingsOpen}

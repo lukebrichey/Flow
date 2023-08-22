@@ -33,7 +33,7 @@ export default function Modal({
             </svg>
           </button>
         </span>
-        <h2 className="text-xl mb-5">{title}</h2>
+        <h2 className="text-xl mb-5 text-center">{title}</h2>
         {children}
       </div>
     </div>
