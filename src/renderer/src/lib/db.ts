@@ -62,7 +62,7 @@ class MyDatabase extends Dexie {
   dailyFocusGoals: Dexie.Table<IDailyFocusGoal, number>;
 
   constructor() {
-    super('MyDatabase');
+    super('focusdb');
 
     this.version(1).stores({
       preferences: '++id, pomodoroLength, shortBreakLength, longBreakLength, pomodoroCount',

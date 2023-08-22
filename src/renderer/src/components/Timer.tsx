@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import PlayPauseButton from './PlayPauseButton';
 import { TimerType } from '../types/types';
+import { useFocusTime, useSetFocusTime } from '../pages/Root';
+import { updateFocusTime } from '../lib/db';
 
 interface TimerProps {
   type: TimerType;
@@ -26,6 +28,24 @@ export default function Timer({ type, time, activeButton, onZero }: TimerProps):
     setPassedTime(startTime);
     setIsRunning(false);
   }, [startTime, activeButton]);
+
+  // Keep track of focused time
+  const focusTime = useFocusTime();
+  const setFocusTime = useSetFocusTime();
+
+  useEffect(() => {
+    if (
+      isRunning &&
+      (type === 'focus' || activeButton === 'Pomodoro') &&
+      passedTime > 0 &&
+      passedTime % 60 === 0
+    ) {
+      if (passedTime % 60 === 0) {
+        setFocusTime(focusTime + 1);
+        updateFocusTime(focusTime + 1);
+      }
+    }
+  }, [passedTime]);
 
   // Determine whether to count up or down based on timer type
   useEffect(() => {
