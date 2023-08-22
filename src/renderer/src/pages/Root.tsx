@@ -5,7 +5,7 @@ import LinkButton from '../components/LinkButton';
 import FocusGoal from '../components/FocusGoal';
 import Modal from '../components/Modal';
 import Settings from '../components/Settings';
-import { getFocusGoal } from '../lib/db';
+import { getFocusGoal, updateFocusGoal } from '../lib/db';
 
 export default function Home(): JSX.Element {
   const outlet = useOutlet();
@@ -48,6 +48,7 @@ export default function Home(): JSX.Element {
           setFocusGoal={setFocusGoal}
           onSave={(updatedFocusGoal): void => {
             setSettingsOpen(false);
+            updateFocusGoal(updatedFocusGoal);
             setFocusGoal(updatedFocusGoal);
           }}
         />
