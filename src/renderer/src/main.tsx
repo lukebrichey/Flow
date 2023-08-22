@@ -5,6 +5,7 @@ import Root from './pages/Root';
 import Focus from './pages/Focus';
 import Pomodoro from './pages/Pomodoro';
 import './assets/index.css';
+import { initializeDailyFocus } from './lib/initialize';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,8 @@ const router = createBrowserRouter([
     ]
   }
 ]);
+
+initializeDailyFocus();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

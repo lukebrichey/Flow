@@ -56,7 +56,6 @@ const DEFAULT_FOCUS_GOAL: IDailyFocusGoal = {
 */
 
 class MyDatabase extends Dexie {
-  // Add definite assignment assertion
   preferences: Dexie.Table<IPreference, number>;
   focusStats: Dexie.Table<IFocusStat, number>;
   dailyFocusGoals: Dexie.Table<IDailyFocusGoal, number>;
@@ -151,6 +150,37 @@ export const updateFocusStreak = async (): Promise<void> => {
       await db.focusStats.update(1, { focusStreak: focusStreak + 1 });
     }
   }
+};
+
+// Function to calculate focus stats
+export const calculateFocusStats = async (): Promise<void> => {
+  const allGoals = await db.dailyFocusGoals.toArray();
+
+  // Calculate total focus time
+  const totalFocusTime = allGoals.reduce((total, goal) => total + goal.focusTime, 0);
+
+  // Calculate weekly focus time
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const weeklyGoals = allGoals.filter((goal) => goal.date >= oneWeekAgo);
+  const weeklyFocusTime = weeklyGoals.reduce((total, goal) => total + goal.focusTime, 0);
+
+  // Calculate monthly focus time
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
+  const monthlyGoals = allGoals.filter((goal) => goal.date >= oneMonthAgo);
+  const monthlyFocusTime = monthlyGoals.reduce((total, goal) => total + goal.focusTime, 0);
+
+  // Calculate focus streak
+  const focusStreak = await updateFocusStreak();
+
+  // Update focus stats
+  await db.focusStats.update(1, {
+    totalFocusTime,
+    weeklyFocusTime,
+    monthlyFocusTime,
+    focusStreak
+  });
 };
 
 // Use 'export type' for re-exporting types
