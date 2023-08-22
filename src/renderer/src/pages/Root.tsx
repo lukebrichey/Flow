@@ -5,7 +5,7 @@ import LinkButton from '../components/LinkButton';
 import FocusGoal from '../components/FocusGoal';
 import Modal from '../components/Modal';
 import Settings from '../components/Settings';
-import { getFocusGoal, updateFocusGoal } from '../lib/db';
+import { getFocusGoal, getFocusTime, updateFocusGoal } from '../lib/db';
 
 export default function Home(): JSX.Element {
   const outlet = useOutlet();
@@ -13,9 +13,10 @@ export default function Home(): JSX.Element {
   const [focusTime, setFocusTime] = useState<number>(0);
   const [focusGoal, setFocusGoal] = useState<number>(0);
 
-  // Fetch current focus goal from the database
+  // Fetch current focus goal and focus time from the database
   useEffect(() => {
     getFocusGoal().then((goal) => setFocusGoal(goal));
+    getFocusTime().then((time) => setFocusTime(time));
   }, []);
 
   return (
