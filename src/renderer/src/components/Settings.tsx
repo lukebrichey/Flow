@@ -34,12 +34,12 @@ export default function Settings({ focusGoal, setFocusGoal, onSave }: SettingsPr
   return (
     <div className="flex flex-col items-center justify-center space-y-5">
       <div className="flex flex-col items-center justify-center">
-        <label className="text-gray-700 text-sm font-bold mb-2" htmlFor="pomodoro">
+        <label className="text-gray-700 text-sm font-bold mb-2" htmlFor="focusGoal">
           Daily Focus Goal (minutes)
         </label>
         <input
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="pomodoro"
+          id="focusGoal"
           type="number"
           value={focusGoal}
           onChange={(e): void => {
