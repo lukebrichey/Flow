@@ -1,6 +1,6 @@
 import { useOutletContext, useOutlet, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { ArrowSmallRightIcon, Cog6ToothIcon } from '@heroicons/react/20/solid';
+import { ArrowSmallRightIcon, Bars3Icon } from '@heroicons/react/20/solid';
 import LinkButton from '../components/LinkButton';
 import FocusGoal from '../components/FocusGoal';
 import Modal from '../components/Modal';
@@ -28,7 +28,7 @@ export default function Home(): JSX.Element {
           </div>
         </div>
         <div className="flex ml-24">
-          <Cog6ToothIcon
+          <Bars3Icon
             className="h-7 w-7 hover:scale-110 hover:cursor-pointer transition-transform text-slate-700"
             onClick={(): void => {
               setSettingsOpen((prev) => !prev);
