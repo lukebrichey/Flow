@@ -133,7 +133,7 @@ export const getFocusStreak = async (): Promise<number> => {
 
 // Fucntion that handles the focus streak logic, will be called at the beginning
 // of each new day
-export const updateFocusStreak = async (): Promise<void> => {
+export const updateFocusStreak = async (): Promise<number> => {
   const latestGoal = await db.dailyFocusGoals.orderBy('date').reverse().first();
 
   // Check if there are missing days
@@ -150,6 +150,8 @@ export const updateFocusStreak = async (): Promise<void> => {
       await db.focusStats.update(1, { focusStreak: focusStreak + 1 });
     }
   }
+
+  return getFocusStreak();
 };
 
 // Function to calculate focus stats
@@ -173,6 +175,19 @@ export const calculateFocusStats = async (): Promise<void> => {
 
   // Calculate focus streak
   const focusStreak = await updateFocusStreak();
+
+  // If no focus stats, create them
+  await db.focusStats.count().then((count) => {
+    if (count === 0) {
+      db.focusStats.add({
+        totalFocusTime,
+        weeklyFocusTime,
+        monthlyFocusTime,
+        focusStreak
+      });
+    }
+    return;
+  });
 
   // Update focus stats
   await db.focusStats.update(1, {

@@ -24,6 +24,8 @@ const router = createBrowserRouter([
   }
 ]);
 
+// This function calculates the streaks and initializes the daily focus data
+// for the current day. This function is called on every app launch.
 initializeDailyFocus();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
