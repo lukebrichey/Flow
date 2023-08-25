@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Root from './pages/Root';
 import Focus from './pages/Focus';
@@ -9,7 +9,7 @@ import './assets/index.css';
 import { initializeDailyFocus } from './lib/initialize';
 import { ArrowPathIcon } from '@heroicons/react/20/solid';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Root />,
